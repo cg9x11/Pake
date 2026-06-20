@@ -126,19 +126,15 @@ fn request_background_portal() {
 
         let mut options: HashMap<&str, zbus::zvariant::Value<'_>> = HashMap::new();
         options.insert("reason", zbus::zvariant::Value::from("Keep running in background"));
-        options.insert("autostart", zbus::zvariant::Value::from(false));
 
-        match conn.call_method(
+        if let Err(e) = conn.call_method(
             Some("org.freedesktop.portal.Desktop"),
             "/org/freedesktop/portal/desktop",
             Some("org.freedesktop.portal.Background"),
             "RequestBackground",
             &("", &options),
         ) {
-            Ok(_) => {}
-            Err(e) => {
-                eprintln!("[Pake] Failed to request background portal: {e}");
-            }
+            eprintln!("[Pake] Failed to request background portal: {e}");
         }
     });
 }
