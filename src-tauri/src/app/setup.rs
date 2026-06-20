@@ -16,6 +16,7 @@ pub fn set_system_tray(
     tray_icon_path: &str,
     _init_fullscreen: bool,
     allow_multi_window: bool,
+    #[cfg(target_os = "linux")] app_name: &str,
 ) -> tauri::Result<()> {
     if !show_system_tray {
         app.remove_tray_by_id("pake-tray");
@@ -106,14 +107,14 @@ pub fn set_system_tray(
     tray.set_icon_as_template(false)?;
 
     #[cfg(target_os = "linux")]
-    request_background_portal();
+    request_background_portal(app_name);
 
     Ok(())
 }
 
 #[cfg(target_os = "linux")]
-fn request_background_portal() {
-    crate::app::background_portal::request_background("com.pake.zalo");
+fn request_background_portal(app_name: &str) {
+    crate::app::background_portal::request_background(app_name);
 }
 
 pub fn set_global_shortcut(

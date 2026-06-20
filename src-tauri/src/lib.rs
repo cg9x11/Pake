@@ -186,6 +186,8 @@ pub fn run_app() {
                 &pake_config.system_tray_path,
                 init_fullscreen,
                 multi_window,
+                #[cfg(target_os = "linux")]
+                tauri_config.product_name.as_deref().unwrap_or("pake-app"),
             )?;
             set_global_shortcut(app.app_handle(), activation_shortcut, init_fullscreen)?;
 
