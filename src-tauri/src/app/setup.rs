@@ -113,30 +113,7 @@ pub fn set_system_tray(
 
 #[cfg(target_os = "linux")]
 fn request_background_portal() {
-    use std::collections::HashMap;
-
-    std::thread::spawn(|| {
-        let conn = match zbus::blocking::Connection::session() {
-            Ok(conn) => conn,
-            Err(e) => {
-                eprintln!("[Pake] Failed to DBus session for background portal: {e}");
-                return;
-            }
-        };
-
-        let mut options: HashMap<&str, zbus::zvariant::Value<'_>> = HashMap::new();
-        options.insert("reason", zbus::zvariant::Value::from("Keep running in background"));
-
-        if let Err(e) = conn.call_method(
-            Some("org.freedesktop.portal.Desktop"),
-            "/org/freedesktop/portal/desktop",
-            Some("org.freedesktop.portal.Background"),
-            "RequestBackground",
-            &("", &options),
-        ) {
-            eprintln!("[Pake] Failed to request background portal: {e}");
-        }
-    });
+    crate::app::background_portal::request_background("com.pake.zalo");
 }
 
 pub fn set_global_shortcut(
